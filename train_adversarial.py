@@ -44,7 +44,7 @@ def train(epoch):
         main_loss = loss * weights.data.clone()
         main_loss.sum().backward()
 
-        adv_loss = -loss.data.clone() * weights
+        adv_loss = -0.01*loss.data.clone() * weights
         adv_loss.sum().backward()
 
         optimizer.step()
