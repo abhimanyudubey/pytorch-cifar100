@@ -50,7 +50,7 @@ def train(epoch):
         optimizer.step()
 
         w_loss = loss * weights
-        print(w_loss.sum())
+        print(w_loss.size())
         w_loss = w_loss.sum().item()
 
         n_iter = (epoch - 1) * len(cifar100_training_loader) + batch_index + 1
