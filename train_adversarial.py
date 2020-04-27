@@ -50,7 +50,7 @@ def train(epoch):
 
         optimizer.step()
 
-        w_loss = loss * weights
+        w_loss = torch.mul(loss, weights)
         print(w_loss.size(), loss.size(), weights.size())
         w_loss = w_loss.sum().item()
 
