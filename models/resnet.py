@@ -134,7 +134,7 @@ class ResNet(nn.Module):
         output = self.fc(output)
 
         if self.is_sigmoid:
-            return 2*torch.nn.Sigmoid(output)-1
+            return 2*torch.sigmoid(output)-1
 
         return output
 
