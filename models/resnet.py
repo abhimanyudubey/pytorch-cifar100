@@ -135,7 +135,7 @@ class ResNet(nn.Module):
 
         if self.is_sigmoid:
             return torch.nn.functional.softmax(
-                torch.nn.functional.relu_(output), dim=0)
+                2*torch.sigmoid(output)-1)
 
         return output
 
