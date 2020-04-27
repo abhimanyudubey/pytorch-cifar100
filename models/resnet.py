@@ -16,7 +16,7 @@ class BasicBlock(nn.Module):
 
     """
 
-    #BasicBlock and BottleNeck block 
+    #BasicBlock and BottleNeck block
     #have different output size
     #we use class attribute expansion
     #to distinct
@@ -44,7 +44,7 @@ class BasicBlock(nn.Module):
                 nn.Conv2d(in_channels, out_channels * BasicBlock.expansion, kernel_size=1, stride=stride, bias=False),
                 nn.BatchNorm2d(out_channels * BasicBlock.expansion)
             )
-        
+
     def forward(self, x):
         return nn.ReLU(inplace=True)(self.residual_function(x) + self.shortcut(x))
 
@@ -73,13 +73,13 @@ class BottleNeck(nn.Module):
                 nn.Conv2d(in_channels, out_channels * BottleNeck.expansion, stride=stride, kernel_size=1, bias=False),
                 nn.BatchNorm2d(out_channels * BottleNeck.expansion)
             )
-        
+
     def forward(self, x):
         return nn.ReLU(inplace=True)(self.residual_function(x) + self.shortcut(x))
-    
+
 class ResNet(nn.Module):
 
-    def __init__(self, block, num_block, num_classes=100):
+    def __init__(self, block, num_block, num_classes=100, is_sigmoid=False):
         super().__init__()
 
         self.in_channels = 64
@@ -95,31 +95,32 @@ class ResNet(nn.Module):
         self.conv4_x = self._make_layer(block, 256, num_block[2], 2)
         self.conv5_x = self._make_layer(block, 512, num_block[3], 2)
         self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
+        self.is_sigmoid = is_sigmoid
         self.fc = nn.Linear(512 * block.expansion, num_classes)
 
     def _make_layer(self, block, out_channels, num_blocks, stride):
-        """make resnet layers(by layer i didnt mean this 'layer' was the 
-        same as a neuron netowork layer, ex. conv layer), one layer may 
-        contain more than one residual block 
+        """make resnet layers(by layer i didnt mean this 'layer' was the
+        same as a neuron netowork layer, ex. conv layer), one layer may
+        contain more than one residual block
 
         Args:
             block: block type, basic block or bottle neck block
             out_channels: output depth channel number of this layer
             num_blocks: how many blocks per layer
             stride: the stride of the first block of this layer
-        
+
         Return:
             return a resnet layer
         """
 
-        # we have num_block blocks per layer, the first block 
+        # we have num_block blocks per layer, the first block
         # could be 1 or 2, other blocks would always be 1
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
         for stride in strides:
             layers.append(block(self.in_channels, out_channels, stride))
             self.in_channels = out_channels * block.expansion
-        
+
         return nn.Sequential(*layers)
 
     def forward(self, x):
@@ -132,32 +133,47 @@ class ResNet(nn.Module):
         output = output.view(output.size(0), -1)
         output = self.fc(output)
 
-        return output 
+        if self.is_sigmoid:
+            return 2*torch.nn.Sigmoid(output)-1
 
-def resnet18():
+        return output
+
+
+def resnet18(num_classes=100, is_sigmoid=False):
     """ return a ResNet 18 object
     """
-    return ResNet(BasicBlock, [2, 2, 2, 2])
+    return ResNet(
+        BasicBlock, [2, 2, 2, 2],
+        num_classes=num_classes, is_sigmoid=is_sigmoid)
 
-def resnet34():
+
+def resnet34(num_classes=100, is_sigmoid=False):
     """ return a ResNet 34 object
     """
-    return ResNet(BasicBlock, [3, 4, 6, 3])
+    return ResNet(
+        BasicBlock, [3, 4, 6, 3],
+        num_classes=num_classes, is_sigmoid=is_sigmoid)
 
-def resnet50():
+
+def resnet50(num_classes=100, is_sigmoid=False):
     """ return a ResNet 50 object
     """
-    return ResNet(BottleNeck, [3, 4, 6, 3])
+    return ResNet(
+        BottleNeck, [3, 4, 6, 3],
+        num_classes=num_classes, is_sigmoid=is_sigmoid)
 
-def resnet101():
+
+def resnet101(num_classes=100, is_sigmoid=False):
     """ return a ResNet 101 object
     """
-    return ResNet(BottleNeck, [3, 4, 23, 3])
+    return ResNet(
+        BottleNeck, [3, 4, 23, 3],
+        num_classes=num_classes, is_sigmoid=is_sigmoid)
 
-def resnet152():
+
+def resnet152(num_classes=100, is_sigmoid=False):
     """ return a ResNet 152 object
     """
-    return ResNet(BottleNeck, [3, 8, 36, 3])
-
-
-
+    return ResNet(
+        BottleNeck, [3, 8, 36, 3],
+        num_classes=num_classes, is_sigmoid=is_sigmoid)
