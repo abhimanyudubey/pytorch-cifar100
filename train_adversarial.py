@@ -39,10 +39,12 @@ def train(epoch):
         outputs = net(images)
         weights = a_net(images)
 
-        loss = loss_function(
-            outputs, labels, weights=weights.data.clone())
-        loss_adv = -loss_function(
-            outputs.data.clone(), labels, weights=weights)
+        loss_function = torch.nn.CrossEntropyLoss(weight=weights.data.clone())
+        loss = loss_function(outputs, labels)
+        loss_function_adv = torch.nn.CrossEntropyLoss(
+            weight=weights)
+        loss_adv = -loss_function_adv(
+            outputs.data.clone(), labels)
         loss.backward()
         loss_adv.backward()
         optimizer.step()
@@ -93,6 +95,7 @@ def eval_training(epoch):
         labels = labels.cuda()
 
         outputs = net(images)
+        loss_function = torch.nn.CrossEntropyLoss()
         loss = loss_function(outputs, labels)
         test_loss += loss.item()
         _, preds = outputs.max(1)
@@ -152,7 +155,6 @@ if __name__ == '__main__':
         shuffle=args.s
     )
 
-    loss_function = nn.CrossEntropyLoss()
     optimizer = optim.SGD(
         list(net.parameters()) + list(a_net.parameters()),
         lr=args.lr, momentum=0.9, weight_decay=5e-4)
