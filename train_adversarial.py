@@ -67,7 +67,7 @@ def train(epoch):
 
         print(
             'Training Epoch: {epoch} [{trained_samples}/{total_samples}]\
-            \tLoss: {:0.4f}\t WLossAdv: {:0.4f}\tLR: {:0.6f}'.format(
+            \tLoss: {:0.4f}\t WA: {:0.4f}\tLR: {:0.6f}'.format(
                 loss.mean().item(),
                 w_loss-2*loss.mean().item(),
                 optimizer.param_groups[0]['lr'],
