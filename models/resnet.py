@@ -99,7 +99,6 @@ class ResNet(nn.Module):
 
         if is_sigmoid:
             self.fc = nn.Linear(512 * block.expansion, num_classes, bias=False)
-            nn.init.constant_(self.fc.weight, 1)
         else:
             self.fc = nn.Linear(512 * block.expansion, num_classes)
 
