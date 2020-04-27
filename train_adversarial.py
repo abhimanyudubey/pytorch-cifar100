@@ -69,7 +69,7 @@ def train(epoch):
             'Training Epoch: {epoch} [{trained_samples}/{total_samples}]\
             \tLoss: {:0.4f}\t WA: {:0.4f}\tLR: {:0.6f}'.format(
                 loss.mean().item(),
-                w_loss-2*loss.mean().item(),
+                w_loss-loss.mean().item(),
                 optimizer.param_groups[0]['lr'],
                 epoch=epoch,
                 trained_samples=batch_index * args.b + len(images),
