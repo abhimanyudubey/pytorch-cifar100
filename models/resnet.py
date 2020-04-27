@@ -138,8 +138,8 @@ class ResNet(nn.Module):
         output = self.fc(output)
 
         if self.is_sigmoid:
-            sc_output = torch.nn.functional.softmax(output, dim=0)
-            print(sc_output)
+            sc_output = torch.nn.functional.normalize(
+                torch.abs(output), p=1, dim=1, eps=1e-12, out=None)
             return sc_output
 
         return output
