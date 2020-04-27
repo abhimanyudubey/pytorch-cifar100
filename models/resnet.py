@@ -139,7 +139,7 @@ class ResNet(nn.Module):
 
         if self.is_sigmoid:
             sc_output = torch.nn.functional.normalize(
-                torch.abs(output), p=1, dim=1, eps=1e-12, out=None)
+                torch.abs(output), p=1, dim=0, eps=1e-12, out=None)
             return sc_output
 
         return output
