@@ -167,7 +167,7 @@ if __name__ == '__main__':
     # use tensorboard
     if not os.path.exists(settings.LOG_DIR):
         os.mkdir(settings.LOG_DIR)
-    writer = SummaryWriter(log_dir=os.path.join(
+    writer = SummaryWriter(logdir=os.path.join(
             settings.LOG_DIR, args.net, settings.TIME_NOW))
     input_tensor = torch.Tensor(12, 3, 32, 32).cuda()
     writer.add_graph(net, Variable(input_tensor, requires_grad=True))
