@@ -96,7 +96,12 @@ class ResNet(nn.Module):
         self.conv5_x = self._make_layer(block, 512, num_block[3], 2)
         self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
         self.is_sigmoid = is_sigmoid
-        self.fc = nn.Linear(512 * block.expansion, num_classes)
+
+        if is_sigmoid:
+            self.fc = nn.Linear(512 * block.expansion, num_classes, bias=False)
+            nn.init.constant_(self.fc.weight, 1)
+        else:
+            self.fc = nn.Linear(512 * block.expansion, num_classes)
 
     def _make_layer(self, block, out_channels, num_blocks, stride):
         """make resnet layers(by layer i didnt mean this 'layer' was the
@@ -134,8 +139,7 @@ class ResNet(nn.Module):
         output = self.fc(output)
 
         if self.is_sigmoid:
-            sc_output = torch.nn.functional.softmax(
-                2*torch.sigmoid(output)-1, dim=0)
+            sc_output = torch.nn.functional.softmax(output, dim=0)
             print(sc_output)
             return sc_output
 
