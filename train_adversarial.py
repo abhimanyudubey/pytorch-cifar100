@@ -38,7 +38,8 @@ def train(epoch):
         optimizer.zero_grad()
         outputs = net(images)
         weights = a_net(images)
-        weights = weights.view(weights.size(0), -1)
+        weights = torch.flatten(weights)
+
 
         loss_function = torch.nn.CrossEntropyLoss(reduction='none')
         loss = loss_function(outputs, labels)
