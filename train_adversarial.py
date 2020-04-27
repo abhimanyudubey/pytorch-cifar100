@@ -73,7 +73,7 @@ def train(epoch):
             ))
 
         # update training loss for each iteration
-        writer.add_scalar('Train/loss', loss.item(), n_iter)
+        writer.add_scalar('Train/loss', loss.mean().item(), n_iter)
 
     for name, param in net.named_parameters():
         layer, attr = os.path.splitext(name)
