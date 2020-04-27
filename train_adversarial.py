@@ -154,7 +154,7 @@ if __name__ == '__main__':
 
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.SGD(
-        [net.parameters(), a_net.parameters()],
+        list(net.parameters()) + list(a_net.parameters()),
         lr=args.lr, momentum=0.9, weight_decay=5e-4)
     train_scheduler = optim.lr_scheduler.MultiStepLR(
         optimizer, milestones=settings.MILESTONES, gamma=0.2)
