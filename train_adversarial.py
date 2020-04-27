@@ -38,7 +38,6 @@ def train(epoch):
         optimizer.zero_grad()
         outputs = net(images)
         weights = a_net(images)
-        print(weights.size())
 
         loss_function = torch.nn.CrossEntropyLoss(reduction='none')
         loss = loss_function(outputs, labels)
@@ -51,7 +50,7 @@ def train(epoch):
         optimizer.step()
 
         w_loss = loss * weights
-        print(w_loss.size())
+        print(w_loss.size(), loss.size(), weights.size())
         w_loss = w_loss.sum().item()
 
         n_iter = (epoch - 1) * len(cifar100_training_loader) + batch_index + 1
