@@ -49,6 +49,9 @@ def train(epoch):
 
         optimizer.step()
 
+        w_loss = loss * weights
+        w_loss = w_loss.mean().item()
+
         n_iter = (epoch - 1) * len(cifar100_training_loader) + batch_index + 1
 
         last_layer = list(net.children())[-1]
@@ -64,8 +67,9 @@ def train(epoch):
 
         print(
             'Training Epoch: {epoch} [{trained_samples}/{total_samples}]\
-            \tLoss: {:0.4f}\tLR: {:0.6f}'.format(
+            \tLoss: {:0.4f}\t WLoss: {:0.4f}\tLR: {:0.6f}'.format(
                 loss.mean().item(),
+                w_loss,
                 optimizer.param_groups[0]['lr'],
                 epoch=epoch,
                 trained_samples=batch_index * args.b + len(images),
