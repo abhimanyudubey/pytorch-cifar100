@@ -77,9 +77,12 @@ class BottleNeck(nn.Module):
     def forward(self, x):
         return nn.ReLU(inplace=True)(self.residual_function(x) + self.shortcut(x))
 
+
 class ResNet(nn.Module):
 
-    def __init__(self, block, num_block, num_classes=100, is_sigmoid=False):
+    def __init__(
+            self, block, num_block, num_classes=100, is_sigmoid=False,
+            sigmoid_k=32):
         super().__init__()
 
         self.in_channels = 64
@@ -96,6 +99,7 @@ class ResNet(nn.Module):
         self.conv5_x = self._make_layer(block, 512, num_block[3], 2)
         self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
         self.is_sigmoid = is_sigmoid
+        self.sigmoid_k = sigmoid_k
 
         if is_sigmoid:
             self.fc = nn.Linear(512 * block.expansion, num_classes, bias=False)
@@ -138,11 +142,13 @@ class ResNet(nn.Module):
         output = self.fc(output)
 
         if self.is_sigmoid:
-            sc_output = torch.nn.functional.normalize(
+            output = output.view(-1, self.sigmoid_k)
+            output = torch.nn.functional.normalize(
                 torch.abs(output), p=1, dim=0, eps=1e-12, out=None)
-            return sc_output
+            output = output.view(-1, 1)
+            return output
 
-        return output
+        return output*self.sigmoid_k
 
 
 def resnet18(num_classes=100, is_sigmoid=False):
