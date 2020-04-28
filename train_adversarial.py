@@ -50,7 +50,8 @@ def train(epoch):
         main_loss.sum().backward()
 
         adv_loss = loss.data.clone() * weights
-        adv_loss = -(adv_loss.sum() - r_loss.data.clone()
+        adv_loss = -10.0*(
+            adv_loss.sum() - r_loss.data.clone()
             )/(r_loss.data.clone())
         adv_loss.backward()
 
