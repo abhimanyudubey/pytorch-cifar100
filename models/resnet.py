@@ -82,7 +82,7 @@ class ResNet(nn.Module):
 
     def __init__(
             self, block, num_block, num_classes=100, is_sigmoid=False,
-            sigmoid_k=32):
+            sigmoid_k=50):
         super().__init__()
 
         self.in_channels = 64

@@ -48,7 +48,7 @@ def train(epoch):
 
         main_loss = (
             epoch*1.0/settings.EPOCH)**0.5 * loss * weights.detach() +\
-            (1 - (epoch*1.0/settings.EPOCH)**0.5) * loss 
+            (1 - (epoch*1.0/settings.EPOCH)**0.5) * loss
         main_loss.mean().backward()
 
         adv_loss = loss.detach() * weights
