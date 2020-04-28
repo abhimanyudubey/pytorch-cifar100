@@ -46,8 +46,9 @@ def train(epoch):
         loss = loss_function(outputs, labels)
         r_loss = reg_loss(outputs, labels)
 
-        main_loss = (epoch*1.0/settings.EPOCH) * loss * weights.detach() +\
-            (1 - epoch*1.0/settings.EPOCH) * loss * 1.0/args.b
+        main_loss = (
+            epoch*1.0/settings.EPOCH)**0.25 * loss * weights.detach() +\
+            (1 - (epoch*1.0/settings.EPOCH)**0.25) * loss * 1.0/args.b
         main_loss.sum().backward()
 
         adv_loss = loss.detach() * weights
