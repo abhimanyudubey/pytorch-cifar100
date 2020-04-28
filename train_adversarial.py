@@ -46,10 +46,10 @@ def train(epoch):
         loss = loss_function(outputs, labels)
         r_loss = reg_loss(outputs, labels)
 
-        main_loss = loss * weights.data.clone()
+        main_loss = loss * weights.detach()
         main_loss.sum().backward()
 
-        adv_loss = loss.data.clone() * weights
+        adv_loss = loss.detach() * weights
         adv_loss = -10.0*(
             adv_loss.sum() - r_loss.data.clone()
             )/(r_loss.data.clone())
